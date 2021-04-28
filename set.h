@@ -1,6 +1,7 @@
 #ifndef SET_H
 #define SET_H
 #include <iostream>
+#include <string>
 
 template <class Type>// Szablon klasy
 class Set
@@ -14,12 +15,12 @@ public:
     Type & operator[](int i)
     {
         if(i>=0 && i<lenght) return table[i];
-        return NULL;
+        throw i;
     }
     const Type & operator[](int i) const
     {
         if(i>=0 && i<lenght) return table[i];
-        return NULL;
+        throw i;
     }
     void operator+(Type element)
     {
@@ -31,12 +32,18 @@ public:
             {
                 new_table[i] = table[i];
             }
+            new_table[current] = element;
+            ++current;
             delete [] table;
-            table = new_table;
             ++lenght;
+            table = new_table;
+
         }
-        table[current] = element;
-        ++current;
+        else
+        {
+            table[current] = element;
+            ++current;
+        }
     }
     void operator-(Type element)
     {
@@ -53,14 +60,14 @@ public:
             }
         }
     }
-    void operator+(Set other_set)
+    void operator+(Set &other_set)
     {
         for(int i=0; i<other_set.sets_size(); ++i)
         {
             operator+(other_set[i]);
         }
     }
-    void operator-(Set other_set)
+    void operator-(Set &other_set)
     {
         for(int i=0; i<other_set.sets_size(); ++i)
         {
@@ -78,14 +85,14 @@ public:
     }
     int sets_size(){return current;}
     int size(){return lenght;}
-    void intersection(Set other_set)
+    void intersection(Set &other_set)
     {
-        for(int i=0; i<current; ++i)
+        for(int i=current; i>0; --i)
         {
-            if(other_set.is_in_set(table[i])==false) operator-(table[i]);
+            if(other_set.is_in_set(table[i-1])==false) operator-(table[i-1]);
         }
     }
-    bool operator==(Set other_set)
+    bool operator==(Set &other_set)
     {
         if(current != other_set.sets_size()) return false;
         for(int i=0; i<other_set.sets_size(); ++i)
@@ -95,7 +102,15 @@ public:
         return true;
     }
 
-    //friend
-    //std::ostream& operator<< (std::ostream &os,Set &set);
+    friend
+    std::ostream& operator<< (std::ostream &os,Set &set)
+    {
+        for(int i = 0; i<set.sets_size(); ++i)
+        {
+            os<<set[i]<<", ";
+        }
+        os<<"\n";
+        return os;
+    }
 };
 #endif

@@ -6,9 +6,10 @@
             "command": "/usr/bin/g++",
             "args": [
                 "-g",
-                "${file}",
+                "${workspaceFolder}/*.cpp",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${workspaceFolder}/${workspaceFolderBasename}.out",
+                "-Wall"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
